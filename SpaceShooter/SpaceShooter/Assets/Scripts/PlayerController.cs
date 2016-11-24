@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+// PlayerController Code for the web and desktop game version
+
 [System.Serializable]
 public class Boundary
 {
@@ -11,6 +13,7 @@ public class PlayerController : MonoBehaviour
 {
 
 	private Rigidbody rb;
+	private AudioSource audioSource;
 	public float speed;
 	public float tilt;
 	public Boundary boundary;
@@ -26,6 +29,7 @@ public class PlayerController : MonoBehaviour
 	void Start () 
 	{
 		rb = GetComponent<Rigidbody> ();
+		audioSource = GetComponent<AudioSource> ();
 	}
 
 	void Update()
@@ -40,15 +44,18 @@ public class PlayerController : MonoBehaviour
 			// So that we can easily find in the scene and perform actions on it. 
 			// HOWEVER, since we won't need to worry about the shot once its fired we can get rid of the reference GameObject clone and the cast "as GameObject".
 			GameObject clone = Instantiate (shot, shotSpawn.position, shotSpawn.rotation) as GameObject;
+			audioSource.Play ();
 		}
 	}
+
 	// FixedUpdate is called once just before each physics step
 	void FixedUpdate () 
 	{
-		float moveHorizontal = Input.GetAxis ("Horizontal");
+		float moveHorizontal = Input.GetAxis ("Horizontal");  
 		float moveVertical = Input.GetAxis ("Vertical");
 
 		Vector3 movement = new Vector3 (moveHorizontal,0.0f,moveVertical);
+
 		rb.velocity = movement * speed;
 
 		// This creates the border so that the spaceship cannot leave the screen. It uses Mathf.Clamp to pin the spaceship's min and max positions so that the player can only
@@ -57,8 +64,9 @@ public class PlayerController : MonoBehaviour
 		rb.position = border;
 
 		//rb.rotation = Quaternion.Euler (0f,0f, rb.velocity.x * -tilt);
-		Quaternion rotate = Quaternion.Euler (0f,0f, rb.velocity.x * -tilt);
+		Quaternion rotate = Quaternion.Euler (0.0f,0.0f, rb.velocity.x * -tilt);
 		rb.rotation = rotate;
-
 	}
+
 }
+	
